@@ -10,6 +10,8 @@ OUTPUT_PATH = r"C:\Users\Bilal Ahmad\Documents\Fiverr\ttmedia_agency\outputs"
 
 COLUMNS = ["First Name", "Last Name", "Linkedin", "Company", "Website", "Country", "Email", "Linkedin Company"]
 
+REMOVE_WORDS = ["llc", ".com"]
+
 # if output folder does not exist, create it
 if not os.path.exists(OUTPUT_PATH):
     print("Creating output folder...")
@@ -27,6 +29,8 @@ def remove_duplicate(df: pd.DataFrame):
     """Remove duplicate rows from dataframe over `Company` column"""
     # replace nan with empty string
     df['Company'] = df['Company'].fillna('')
+    # if company column contains any of the words in REMOVE_WORDS, replace it with empty string
+    df['Company'] = df['Company'].apply(lambda x: '' if any(word in x.lower() for word in REMOVE_WORDS) else x)
     # split the company column by - and take the first part
     df['Company'] = df['Company'].apply(lambda x: x.split('-')[0])
     # drop duplicates and keep first
